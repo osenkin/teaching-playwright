@@ -28,11 +28,13 @@ export default defineConfig({
 	use: {
 		/* Base URL to use in actions like `await page.goto('')`. */
 		baseURL: "https://qauto.forstudy.space/",
-
 		httpCredentials: {
-			username: "qauto",
+			username: "guest",
 			password: "welcome2qauto",
+			send: "always",
 		},
+
+		ignoreHTTPSErrors: true,
 
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
 		trace: "on",
@@ -44,13 +46,15 @@ export default defineConfig({
 	projects: [
 		{
 			name: "chromium",
-			use: { ...devices["Desktop Chrome"] },
+			use: {
+				...devices["Desktop Chrome"],
+			},
 		},
 
-		{
-			name: "firefox",
-			use: { ...devices["Desktop Firefox"] },
-		},
+		// {
+		// 	name: "firefox",
+		// 	use: { ...devices["Desktop Firefox"] },
+		// },
 
 		//{
 		//	name: "webkit",
