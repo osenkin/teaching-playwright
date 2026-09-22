@@ -12,5 +12,8 @@
 	"scripts": {
 		"prepare": "husky",
 		"test": "npx playwright test"
+	},
+	"dependencies": {
+		"dotenv": "^18.0.2"
 	}
 }
