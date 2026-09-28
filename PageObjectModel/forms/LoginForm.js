@@ -7,12 +7,12 @@ export class LoginForm extends BaseForm {
 		this.signINButton = page.locator("button.header_signin");
 		this.emailInput = page.locator("#signinEmail");
 		this.passwordInput = page.locator("#signinPassword");
-		this.loginButton = page.locator(".modal-footer .btn-primary");
+		this.loginButton = page.locator("button", { hasText: "Login" });
 	}
 	async openLoginForm() {
 		await this.signINButton.click();
 	}
-	async login() {
+	async login(user, pass) {
 		await this.emailInput.fill(user);
 		await this.passwordInput.fill(pass);
 		await this.loginButton.click();
