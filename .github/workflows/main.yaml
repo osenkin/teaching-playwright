@@ -1,4 +1,4 @@
-# FORCE REFRESH v8 - CORRECT CLI SYNTAX
+# FORCE REFRESH v9 - OFFICIAL ENV GENERATOR
 name: Playwright Tests inside Docker
 
 on:
@@ -38,16 +38,25 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      - name: Create Base Env File
-        run: |
-          echo "BASE_URL=${{ matrix.url }}" > .env
-          echo "URL=${{ matrix.url }}" >> .env
-          echo "HTTP_USERNAME=${{ secrets.HTTP_USERNAME }}" >> .env
-          echo "HTTP_USERPASSWORD=${{ secrets.HTTP_USERPASSWORD }}" >> .env
+      - name: Make Matrix Env File
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_BASE_URL: ${{ matrix.url }}
+          envkey_URL: ${{ matrix.url }}
+          envkey_HTTP_USERNAME: ${{ secrets.HTTP_USERNAME }}
+          envkey_HTTP_USERPASSWORD: ${{ secrets.HTTP_USERPASSWORD }}
+          file_name: ${{ matrix.env_file }}
+          fail_on_empty: true
 
-          echo "BASE_URL=${{ matrix.url }}" > .env.qauto
-          echo "HTTP_USERNAME=${{ secrets.HTTP_USERNAME }}" >> .env.qauto
-          echo "HTTP_USERPASSWORD=${{ secrets.HTTP_USERPASSWORD }}" >> .env.qauto
+      - name: Make Fallback Env File
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_BASE_URL: ${{ matrix.url }}
+          envkey_URL: ${{ matrix.url }}
+          envkey_HTTP_USERNAME: ${{ secrets.HTTP_USERNAME }}
+          envkey_HTTP_USERPASSWORD: ${{ secrets.HTTP_USERPASSWORD }}
+          file_name: .env.qauto
+          fail_on_empty: true
 
       - name: Run Playwright tests
         env:
@@ -55,13 +64,4 @@ jobs:
           URL: ${{ matrix.url }}
           HTTP_USERNAME: ${{ secrets.HTTP_USERNAME }}
           HTTP_USERPASSWORD: ${{ secrets.HTTP_USERPASSWORD }}
-          PLAYWRIGHT_HTTP_CREDENTIALS_USERNAME: ${{ secrets.HTTP_USERNAME }}
-          PLAYWRIGHT_HTTP_CREDENTIALS_PASSWORD: ${{ secrets.HTTP_USERPASSWORD }}
         run: npx playwright test
-
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report-${{ matrix.env_file }}
-          path: playwright-report/
-          retention-days: 30
