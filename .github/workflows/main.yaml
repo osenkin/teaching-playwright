@@ -1,3 +1,4 @@
+# FORCE REFRESH v3
 name: Playwright Tests inside Docker
 
 on:
