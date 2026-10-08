@@ -1,4 +1,4 @@
-# FINAL VERSION - NATIVE INJECTION WITHOUT ECHO
+# FORCE REFRESH v8 - CORRECT CLI SYNTAX
 name: Playwright Tests inside Docker
 
 on:
@@ -38,6 +38,17 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
+      - name: Create Base Env File
+        run: |
+          echo "BASE_URL=${{ matrix.url }}" > .env
+          echo "URL=${{ matrix.url }}" >> .env
+          echo "HTTP_USERNAME=${{ secrets.HTTP_USERNAME }}" >> .env
+          echo "HTTP_USERPASSWORD=${{ secrets.HTTP_USERPASSWORD }}" >> .env
+
+          echo "BASE_URL=${{ matrix.url }}" > .env.qauto
+          echo "HTTP_USERNAME=${{ secrets.HTTP_USERNAME }}" >> .env.qauto
+          echo "HTTP_USERPASSWORD=${{ secrets.HTTP_USERPASSWORD }}" >> .env.qauto
+
       - name: Run Playwright tests
         env:
           BASE_URL: ${{ matrix.url }}
@@ -46,8 +57,7 @@ jobs:
           HTTP_USERPASSWORD: ${{ secrets.HTTP_USERPASSWORD }}
           PLAYWRIGHT_HTTP_CREDENTIALS_USERNAME: ${{ secrets.HTTP_USERNAME }}
           PLAYWRIGHT_HTTP_CREDENTIALS_PASSWORD: ${{ secrets.HTTP_USERPASSWORD }}
-        run: |
-          npx playwright test --config="use: { httpCredentials: { username: '${{ secrets.HTTP_USERNAME }}', password: '${{ secrets.HTTP_USERPASSWORD }}' } }"
+        run: npx playwright test
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
