@@ -17,9 +17,9 @@ jobs:
         env_file: [.env.qauto, .env.qauto2]
         include:
           - env_file: .env.qauto
-            url: https://qauto.forstudy.space
+            url: https://forstudy.space
           - env_file: .env.qauto2
-            url: https://qauto2.forstudy.space
+            url: https://forstudy.space
 
     container:
       image: ://microsoft.com
@@ -38,7 +38,7 @@ jobs:
 
       - name: Create Env File
         run: |
-          echo "BASE_URL=${{ matrix.url }}" >> ${{ matrix.matrix.env_file }}
+          echo "BASE_URL=${{ matrix.url }}" >> ${{ matrix.env_file }}
           echo "HTTP_USERNAME=${{ secrets.HTTP_USERNAME }}" >> ${{ matrix.env_file }}
           echo "HTTP_USERPASSWORD=${{ secrets.HTTP_USERPASSWORD }}" >> ${{ matrix.env_file }}
 
