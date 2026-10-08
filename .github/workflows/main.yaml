@@ -11,11 +11,24 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        env_file: [.env.qauto, .env.qauto2]
+        include:
+          - env_file: .env.qauto
+            url: https://qauto.forstudy.space
+          - env_file: .env.qauto2
+            url: https://qauto2.forstudy.space
+
     container:
       image: ://microsoft.com
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Testing environment info
+        run: echo "Starting parallel test run for ${{ matrix.env_file }}"
 
       - name: Install dependencies
         run: npm ci
@@ -23,12 +36,18 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
+      - name: Create Env File
+        run: |
+          echo "BASE_URL=${{ matrix.url }}" >> ${{ matrix.matrix.env_file }}
+          echo "HTTP_USERNAME=${{ secrets.HTTP_USERNAME }}" >> ${{ matrix.env_file }}
+          echo "HTTP_USERPASSWORD=${{ secrets.HTTP_USERPASSWORD }}" >> ${{ matrix.env_file }}
+
       - name: Run Playwright tests
         run: npx playwright test
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.env_file }}
           path: playwright-report/
           retention-days: 30
