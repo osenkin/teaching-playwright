@@ -1,4 +1,4 @@
-# FORCE REFRESH v6 - BASIC AUTH INCLUDED
+# FORCE REFRESH v7 - NATIVE HTTP CREDENTIALS
 name: Playwright Tests inside Docker
 
 on:
@@ -18,9 +18,9 @@ jobs:
         env_file: [.env.qauto, .env.qauto2]
         include:
           - env_file: .env.qauto
-            domain: qauto.forstudy.space
+            url: https://qauto.forstudy.space
           - env_file: .env.qauto2
-            domain: qauto2.forstudy.space
+            url: https://qauto2.forstudy.space
 
     steps:
       - uses: actions/checkout@v4
@@ -38,20 +38,19 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      - name: Create Env Files with Auth URLs
+      - name: Create Env Files
         run: |
-          AUTH_URL="https://${{ secrets.HTTP_USERNAME }}:${{ secrets.HTTP_USERPASSWORD }}@${{ matrix.domain }}/"
-
-          echo "BASE_URL=$AUTH_URL" > ${{ matrix.env_file }}
+          echo "BASE_URL=${{ matrix.url }}" > ${{ matrix.env_file }}
           echo "HTTP_USERNAME=${{ secrets.HTTP_USERNAME }}" >> ${{ matrix.env_file }}
           echo "HTTP_USERPASSWORD=${{ secrets.HTTP_USERPASSWORD }}" >> ${{ matrix.env_file }}
 
-          echo "BASE_URL=$AUTH_URL" > .env.qauto
+          echo "BASE_URL=${{ matrix.url }}" > .env.qauto
           echo "HTTP_USERNAME=${{ secrets.HTTP_USERNAME }}" >> .env.qauto
           echo "HTTP_USERPASSWORD=${{ secrets.HTTP_USERPASSWORD }}" >> .env.qauto
 
       - name: Run Playwright tests
         env:
+          BASE_URL: ${{ matrix.url }}
           HTTP_USERNAME: ${{ secrets.HTTP_USERNAME }}
           HTTP_USERPASSWORD: ${{ secrets.HTTP_USERPASSWORD }}
         run: npx playwright test
