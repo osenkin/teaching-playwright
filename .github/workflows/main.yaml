@@ -1,4 +1,4 @@
-# FORCE REFRESH v7 - NATIVE HTTP CREDENTIALS
+# FINAL VERSION - NATIVE INJECTION WITHOUT ECHO
 name: Playwright Tests inside Docker
 
 on:
@@ -38,22 +38,16 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      - name: Create Env Files
-        run: |
-          echo "BASE_URL=${{ matrix.url }}" > ${{ matrix.env_file }}
-          echo "HTTP_USERNAME=${{ secrets.HTTP_USERNAME }}" >> ${{ matrix.env_file }}
-          echo "HTTP_USERPASSWORD=${{ secrets.HTTP_USERPASSWORD }}" >> ${{ matrix.env_file }}
-
-          echo "BASE_URL=${{ matrix.url }}" > .env.qauto
-          echo "HTTP_USERNAME=${{ secrets.HTTP_USERNAME }}" >> .env.qauto
-          echo "HTTP_USERPASSWORD=${{ secrets.HTTP_USERPASSWORD }}" >> .env.qauto
-
       - name: Run Playwright tests
         env:
           BASE_URL: ${{ matrix.url }}
+          URL: ${{ matrix.url }}
           HTTP_USERNAME: ${{ secrets.HTTP_USERNAME }}
           HTTP_USERPASSWORD: ${{ secrets.HTTP_USERPASSWORD }}
-        run: npx playwright test
+          PLAYWRIGHT_HTTP_CREDENTIALS_USERNAME: ${{ secrets.HTTP_USERNAME }}
+          PLAYWRIGHT_HTTP_CREDENTIALS_PASSWORD: ${{ secrets.HTTP_USERPASSWORD }}
+        run: |
+          npx playwright test --config="use: { httpCredentials: { username: '${{ secrets.HTTP_USERNAME }}', password: '${{ secrets.HTTP_USERPASSWORD }}' } }"
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
