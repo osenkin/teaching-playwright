@@ -17,6 +17,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      -name: Update Node.js to version 20
+        run: |
+          npm install -g n
+          n 20
+          node -v
+          
       - name: Install dependencies
         run: npm ci
 
