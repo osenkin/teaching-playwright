@@ -11,9 +11,6 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
 
-    container:
-      image: ://microsoft.com
-
     strategy:
       fail-fast: false
       matrix:
@@ -25,11 +22,8 @@ jobs:
             url: https://qauto2.forstudy.space
 
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Create .env file for environment
         run: |
@@ -37,15 +31,16 @@ jobs:
           echo "HTTP_USERNAME=${{ secrets.HTTP_USERNAME }}" >> .env.${{ matrix.env_name }}
           echo "HTTP_PASSWORD=${{ secrets.HTTP_PASSWORD }}" >> .env.${{ matrix.env_name }}
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run Playwright tests
+      - name: Run tests inside Playwright Docker Container
+        uses: docker://://microsoft.com
         env:
           ENV: ${{ matrix.env_name }}
-        run: npx playwright test
+        with:
+          entrypoint: /bin/sh
+          args: -c "npm ci && npx playwright test"
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
           name: playwright-report-${{ matrix.env_name }}
