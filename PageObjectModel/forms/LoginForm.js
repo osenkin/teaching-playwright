@@ -13,8 +13,8 @@ export class LoginForm extends BaseForm {
 		await this.signINButton.click();
 	}
 	async login(user, pass) {
-		await this.emailInput.fill(user);
-		await this.passwordInput.fill(pass);
+		await this.emailInput.fill(user, { dalay: 50 });
+		await this.passwordInput.fill(pass, { delay: 50 });
 		await this.loginButton.click();
 	}
 }

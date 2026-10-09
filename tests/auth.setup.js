@@ -1,4 +1,4 @@
-import { test as setup } from "@playwright/test";
+import { test as setup, expect } from "@playwright/test";
 import { LoginForm } from "../PageObjectModel/forms/LoginForm.js";
 import path from "path";
 
@@ -8,7 +8,10 @@ setup("authenticate user", async ({ page }) => {
 	const loginForm = new LoginForm(page);
 	await loginForm.openLoginForm();
 	await loginForm.login("yeeeahc@gmail.com", "Test1234");
-	await page.waitForURL(/\/panel\/garage/);
-	await page.waitForLoadState("networkidle");
+	await page.waitForURL(/\/panel\/garage/, {
+		waitUntil: "commit",
+		timeout: 20000,
+	});
+	await expect(page.locator("h1")).toHaveText("Garage", { timeout: 10000 });
 	await page.context().storageState({ path: authFile });
 });
