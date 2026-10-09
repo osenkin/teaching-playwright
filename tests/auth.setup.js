@@ -2,7 +2,11 @@ import { test as setup } from "@playwright/test";
 import { LoginForm } from "../PageObjectModel/forms/LoginForm.js";
 import path from "path";
 
-const authFile = path.resolve(process.cwd(), "playwright/.auth/user.json");
+const envName = process.env.ENV_NAME || "qauto";
+const authFile = path.resolve(
+	process.cwd(),
+	`playwright/.auth/user-${envName}.json`,
+);
 setup("authenticate user", async ({ page }) => {
 	await page.goto("/");
 	const loginForm = new LoginForm(page);

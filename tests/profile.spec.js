@@ -1,6 +1,8 @@
 import { test, expect } from "@playwright/test";
 
-test.use({ storageState: "playwright/.auth/user.json" });
+const envName = process.env.ENV_NAME || "qauto";
+test.use({ storageState: `playwright/.auth/user-${envName}.json` });
+
 test.describe("Mocking API Response", () => {
 	test('Підміна данних профілю з "lakki world" на кастомні', async ({
 		page,
