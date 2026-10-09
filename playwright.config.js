@@ -35,6 +35,7 @@ export default defineConfig({
 	reporter: "html",
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 	use: {
+		storageState: `playwright/.auth/user-${envName}.json`,
 		/* Base URL to use in actions like `await page.goto('')`. */
 		baseURL: process.env.BASE_URL ?? "",
 		httpCredentials: {

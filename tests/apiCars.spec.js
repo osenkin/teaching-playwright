@@ -1,6 +1,5 @@
 import { test, expect } from "@playwright/test";
 
-test.use({ storageState: "playwright/.auth/user.json" });
 test.describe("API test cars", () => {
 	let carId;
 	test("Positeve test for creating a car", async ({ request }) => {
