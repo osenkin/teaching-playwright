@@ -1,5 +1,4 @@
 import { test, expect } from "@playwright/test";
-import { findSourceMap } from "node:module";
 
 test.describe("Test form registration", () => {
 	const getUniqEmail = () => `test.user+${Date.now()}@gmail.com`;
@@ -12,8 +11,8 @@ test.describe("Test form registration", () => {
 	});
 
 	test("Positive test from valid data", async ({ page }) => {
-		const firstName = " John ";
-		const lastName = " Travolta ";
+		const firstName = " Tester ";
+		const lastName = " Test ";
 		await page.locator("#signupName").fill(firstName.trim());
 		await page.locator("#signupLastName").fill(lastName.trim());
 		await page.locator("#signupEmail").fill(getUniqEmail());

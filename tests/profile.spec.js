@@ -10,8 +10,8 @@ test.describe("Mocking API Response", () => {
 			data: {
 				userId: 12345,
 				photoFilename: null,
-				name: "John",
-				lastName: "Travolta",
+				name: "Tester",
+				lastName: "Test",
 			},
 		};
 
@@ -25,6 +25,6 @@ test.describe("Mocking API Response", () => {
 
 		await page.goto("/panel/profile");
 
-		await expect(page.getByText("John Travolta")).toBeVisible();
+		await expect(page.getByText("Tester Test")).toBeVisible();
 	});
 });

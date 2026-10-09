@@ -21,8 +21,8 @@ test.describe("Test form registration", () => {
 	});
 	test("Positive test from valid data", async () => {
 		await registerForm.fillForm({
-			name: " John ",
-			lastName: " Travolta ",
+			name: " Tetser ",
+			lastName: " Test ",
 			email: getUnicEmail(),
 			password: "Test1234",
 			repeatPassword: "Test1234",
@@ -74,8 +74,8 @@ test.describe("Test form registration", () => {
 
 	test("Negative 5: Passwrods in row password and Re-enter password do not match", async () => {
 		await registerForm.fillForm({
-			name: " John ",
-			lastName: " Travolta",
+			name: " Tester ",
+			lastName: " Test ",
 			email: getUnicEmail(),
 			password: "Test1234",
 			repeatPassword: "Vohoo12345",
