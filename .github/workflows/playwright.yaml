@@ -11,10 +11,6 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
 
-    # Запускаємо всю джобу всередині офіційного докер-контейнера Playwright від Microsoft
-    container:
-      image: ://microsoft.com
-
     strategy:
       fail-fast: false
       matrix:
@@ -37,25 +33,13 @@ jobs:
       - name: Testing environment info
         run: echo "Starting parallel test run for ${{ matrix.env_name }}"
 
-      - name: Create .env file for environment
-        run: |
-          echo "BASE_URL=${{ matrix.url }}" >> .env.${{ matrix.env_name }}
-          echo "HTTP_USERNAME=${{ secrets.HTTP_USERNAME }}" >> .env.${{ matrix.env_name }}
-          echo "HTTP_PASSWORD=${{ secrets.HTTP_PASSWORD }}" >> .env.${{ matrix.env_name }}
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run Playwright tests
-        env:
-          ENV: ${{ matrix.env_name }}
-        run: npx playwright test
+      - name: Run Playwright tests inside Docker container
+        run: docker run --rm -v ${{ github.workspace }}:/work -w /work -e BASE_URL=${{ matrix.url }} -e URL=${{ matrix.url }} -e HTTP_USERNAME=${{ secrets.HTTP_USERNAME }} -e HTTP_PASSWORD=${{ secrets.HTTP_PASSWORD }} ://microsoft.com /bin/sh -c "npm ci && npx playwright test"
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          target: host
           name: playwright-report-${{ matrix.env_name }}
           path: playwright-report/
           retention-days: 30
