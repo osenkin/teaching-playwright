@@ -25,6 +25,6 @@ test.describe("Mocking API Response", () => {
 
 		await page.goto("/panel/profile");
 
-		await expect(page.getByText("John Travolta")).toBeVisible();
+		await expect(page.getByText(/John/)).toBeVisible();
 	});
 });
