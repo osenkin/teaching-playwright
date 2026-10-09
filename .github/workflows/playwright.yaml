@@ -1,4 +1,4 @@
-name: Playwright Tests ACtion
+name: Playwright Tests inside Docker
 
 on:
   push:
@@ -33,10 +33,17 @@ jobs:
       - name: Testing environment info
         run: echo "Starting parallel test run for ${{ matrix.env_name }}"
 
-      - name: Run Playwright tests inside Docker container
+      # Вместо ручного docker run используем нативный запуск шага внутри контейнера.
+      # GitHub Actions сам развернет Docker-образ Playwright и выполнит команды внутри него.
+      - name: Run Playwright tests inside Container
+        uses: docker://://microsoft.com
         env:
-          DOCKER_IMAGE: ://microsoft.com
-        run: docker run --rm -v ${{ github.workspace }}:/work -w /work -e BASE_URL=${{ matrix.url }} -e URL=${{ matrix.url }} -e HTTP_USERNAME=${{ secrets.HTTP_USERNAME }} -e HTTP_PASSWORD=${{ secrets.HTTP_PASSWORD }} $DOCKER_IMAGE /bin/sh -c "npm ci && npx playwright test"
+          BASE_URL: ${{ matrix.url }}
+          URL: ${{ matrix.url }}
+          HTTP_USERNAME: ${{ secrets.HTTP_USERNAME }}
+          HTTP_PASSWORD: ${{ secrets.HTTP_PASSWORD }}
+        with:
+          args: /bin/sh -c "npm ci && npx playwright test"
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
