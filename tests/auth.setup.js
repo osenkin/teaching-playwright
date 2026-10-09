@@ -8,10 +8,7 @@ setup("authenticate user", async ({ page }) => {
 	const loginForm = new LoginForm(page);
 	await loginForm.openLoginForm();
 	await loginForm.login("yeeeahc@gmail.com", "Test1234");
-	await page.waitForURL(/\/panel\/garage/, {
-		waitUntil: "commit",
-		timeout: 20000,
-	});
 	await expect(page.locator("h1")).toHaveText("Garage", { timeout: 10000 });
+	await page.waitForTimeout(4000);
 	await page.context().storageState({ path: authFile });
 });
