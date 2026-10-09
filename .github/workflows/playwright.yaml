@@ -38,7 +38,7 @@ jobs:
         run: |
           PART1="mcr"
           PART2="microsoft.com"
-          IMAGE_PATH="${PART1}.${PART2}/playwright:v1.49.0-jammy"
+          IMAGE_PATH="${PART1}.${PART2}/playwright:v1.63.0-jammy"
 
           docker run --rm \
             -v ${{ github.workspace }}:/work \
