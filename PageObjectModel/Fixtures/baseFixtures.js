@@ -1,7 +1,8 @@
 import { test as base } from "@playwright/test";
 import { GaragePage } from "../pages/GaragePage.js";
 
-const authFile = "./playwright/.auth/user.json";
+const envName = process.env.ENV_NAME || "qauto";
+const authFile = `playwright/.auth/user-${envName}.json`;
 
 export const test = base.extend({
 	userGaragePage: async ({ browser, request }, use) => {
