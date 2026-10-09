@@ -7,7 +7,12 @@ setup("authenticate user", async ({ page }) => {
 	await page.goto("/");
 	const loginForm = new LoginForm(page);
 	await loginForm.openLoginForm();
-	await loginForm.login("yeeeahc@gmail.com", "Test1234");
+	const currentEnv = process.env.ENV_NAME || "qauto";
+	const dynamicEmail = `yeeeahc+${currentEnv}@gmail.com`;
+
+	console.log(`LOG: Logging in on ${currentEnv} using email: ${dynamicEmail}`);
+
+	await loginForm.login(dynamicEmail, "Test1234");
 	await expect(page.locator("h1")).toHaveText("Garage", { timeout: 10000 });
 	await page.waitForTimeout(4000);
 	await page.context().storageState({ path: authFile });
