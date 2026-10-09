@@ -35,7 +35,7 @@ jobs:
           PART2="microsoft.com"
           IMAGE_PATH="${PART1}.${PART2}/playwright:v1.63.0-jammy"
 
-          docker run --rm -v ${{ github.workspace }}:/work -w /work -e BASE_URL="${{ matrix.url }}" -e URL="${{ matrix.url }}" -e HTTP_USERNAME="${{ secrets.HTTP_USERNAME }}" -e HTTP_PASSWORD="${{ secrets.HTTP_PASSWORD }}" -e HUSKY=0 $IMAGE_PATH /bin/sh -c "npm ci && npx playwright test --workers=1"
+          docker run --rm -v ${{ github.workspace }}:/work -w /work -e CI=true -e BASE_URL="${{ matrix.url }}" -e URL="${{ matrix.url }}" -e HTTP_USERNAME="${{ secrets.HTTP_USERNAME }}" -e HTTP_PASSWORD="${{ secrets.HTTP_PASSWORD }}" -e HUSKY=0 $IMAGE_PATH /bin/sh -c "npm ci && npx playwright test --workers=1"
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
