@@ -1,16 +1,13 @@
 name: Playwright Tests inside Docker
-
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-
     strategy:
       fail-fast: false
       matrix:
@@ -20,7 +17,6 @@ jobs:
             url: https://qauto.forstudy.space
           - env_name: qauto2
             url: https://qauto2.forstudy.space
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -39,11 +35,7 @@ jobs:
           PART2="microsoft.com"
           IMAGE_PATH="${PART1}.${PART2}/playwright:v1.63.0-jammy"
 
-          docker run --rm \
-            -v ${{ github.workspace }}:/work \
-            -w /work \
-            $IMAGE_PATH \
-            /bin/sh -c "npm ci && BASE_URL=${{ matrix.url }} URL=${{ matrix.url }} HTTP_USERNAME=${{ secrets.HTTP_USERNAME }} HTTP_PASSWORD=${{ secrets.HTTP_PASSWORD }} npx playwright test"
+          docker run --rm -v ${{ github.workspace }}:/work -w /work -e BASE_URL="${{ matrix.url }}" -e URL="${{ matrix.url }}" -e HTTP_USERNAME="${{ secrets.HTTP_USERNAME }}" -e HTTP_PASSWORD="${{ secrets.HTTP_PASSWORD }}" -e HUSKY=0 $IMAGE_PATH /bin/sh -c "npm ci && npx playwright test --workers=1"
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
