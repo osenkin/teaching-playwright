@@ -34,7 +34,9 @@ jobs:
         run: echo "Starting parallel test run for ${{ matrix.env_name }}"
 
       - name: Run Playwright tests inside Docker container
-        run: docker run --rm -v ${{ github.workspace }}:/work -w /work -e BASE_URL=${{ matrix.url }} -e URL=${{ matrix.url }} -e HTTP_USERNAME=${{ secrets.HTTP_USERNAME }} -e HTTP_PASSWORD=${{ secrets.HTTP_PASSWORD }} ://microsoft.com /bin/sh -c "npm ci && npx playwright test"
+        env:
+          DOCKER_IMAGE: ://microsoft.com
+        run: docker run --rm -v ${{ github.workspace }}:/work -w /work -e BASE_URL=${{ matrix.url }} -e URL=${{ matrix.url }} -e HTTP_USERNAME=${{ secrets.HTTP_USERNAME }} -e HTTP_PASSWORD=${{ secrets.HTTP_PASSWORD }} $DOCKER_IMAGE /bin/sh -c "npm ci && npx playwright test"
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
