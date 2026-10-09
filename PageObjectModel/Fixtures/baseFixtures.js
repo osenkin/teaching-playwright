@@ -6,13 +6,13 @@ const authFile = `playwright/.auth/user-${envName}.json`;
 
 export const test = base.extend({
 	userGaragePage: async ({ browser, request }, use) => {
-		const credentials =
-			request._requestContext?._config?.projects?.[0]?.use?.httpCredentials ||
-			request._requestContext?._config?.use?.httpCredentials;
-
 		const context = await browser.newContext({
 			storageState: authFile,
-			httpCredentials: credentials,
+			httpCredentials: {
+				username: process.env.HTTP_USERNAME ?? "",
+				password: process.env.HTTP_PASSWORD ?? "",
+				send: "always",
+			},
 		});
 
 		const page = await context.newPage();
