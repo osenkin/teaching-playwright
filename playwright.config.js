@@ -1,13 +1,22 @@
 // @ts-check
 import { defineConfig, devices } from "@playwright/test";
-
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
+import path from "path";
 import dotenv from "dotenv";
-const envName = process.env.ENV || "qauto";
-dotenv.config({ path: `.env.${envName}` });
+import { fileURLToPath } from "url";
+
+// 1. Правильний аналог __dirname для ES-модулів (виправляє ReferenceError)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// 2. Визначаємо назву середовища (пріоритет у системної змінної з GitHub Actions)
+const envName = process.env.ENV_NAME || process.env.ENV || "qauto";
+
+// 3. Завантажуємо файли .env ТІЛЬКИ локально.
+// В GitHub Actions (де process.env.CI є істинним) цей блок повністю ігнорується,
+// завдяки чому секрети GitHub Actions не будуть перезаписані порожніми файлами!
+if (!process.env.CI) {
+	dotenv.config({ path: path.resolve(__dirname, `.env.${envName}`) });
+}
 
 /**
  * @see https://playwright.dev/docs/test-configuration
