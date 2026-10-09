@@ -42,7 +42,7 @@ jobs:
           BASE_URL: ${{ matrix.url }}
           URL: ${{ matrix.url }}
           HTTP_USERNAME: ${{ secrets.HTTP_USERNAME }}
-          HTTP_USERPASSWORD: ${{ secrets.HTTP_USERPASSWORD }}
+          HTTP_USERPASSWORD: ${{ secrets.HTTP_PASSWORD }}
         run: npx playwright test
 
       - uses: actions/upload-artifact@v4
