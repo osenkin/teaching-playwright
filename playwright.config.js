@@ -1,17 +1,12 @@
 // @ts-check
 import { defineConfig, devices } from "@playwright/test";
-
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
 import dotenv from "dotenv";
-const envName = process.env.ENV || "qauto";
-dotenv.config({ path: `.env.${envName}` });
 
-/**
- * @see https://playwright.dev/docs/test-configuration
- */
+if (!process.env.CI) {
+	const envName = process.env.ENV || "qauto";
+	dotenv.config({ path: `.env.${envName}` });
+}
+
 export default defineConfig({
 	testDir: "./tests",
 	/* Run tests in files in parallel */
